@@ -7,6 +7,6 @@ public class MyClass {  //In eclipse Ctrl-1 over MyClass to create new JUnit Tes
 		if (x < 999) {
 			throw new IllegalArgumentException("X should be less than 100");
 		}
-		return x / y;
+		return x * y;
 	}
 }
