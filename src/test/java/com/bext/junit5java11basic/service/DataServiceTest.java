@@ -3,99 +3,120 @@ package com.bext.junit5java11basic.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.bext.junit5java11basic.model.Race.HOBBIT;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import com.bext.junit5java11basic.model.Movie;
+import com.bext.junit5java11basic.model.Ring;
 import com.bext.junit5java11basic.model.TolkeinCharacter;
 
 class DataServiceTest {
 
-	//Todo Initialize before each test
-	DataService dataService;
-	
-	
+	private DataService dataService;
+
+	@BeforeEach
+	void setupBeforeEach() {
+		dataService = new DataService();
+	}
+
 	@Test
 	void ensurethatInitializationOkTolkeinCharacterWorksTest() {
-		//Todo check that age is less than 33
-		//Todo chack that name is frodo
-		//Todo check that name is not frodon
-		fail("Not yet implemented");
+		TolkeinCharacter frodo = new TolkeinCharacter("Frodo", 33, HOBBIT);
+
+		Assertions.assertEquals(33, frodo.getAge());
+		Assertions.assertEquals("Frodo", frodo.getName());
+		Assertions.assertNotEquals("Frodon", frodo.getName());
 	}
-	
+
 	@Test
 	void ensureThatEqualsWorksForCharacters() {
-		Object jake = new TolkeinCharacter("Jake",43,HOBBIT);
+		Object jake = new TolkeinCharacter("Jake", 43, HOBBIT);
 		Object samejake = jake;
-		Object jakePseudoClone = new TolkeinCharacter("Jake",22,HOBBIT);
-		//Todo check that
-		//jake is equal to samejack
-		//jake is not equal to jackClone
-		fail("Not yet implemented");
+		Object jakePseudoClone = new TolkeinCharacter("Jake", 22, HOBBIT);
+
+		Assertions.assertEquals(jake, samejake);
+		Assertions.assertNotEquals(jake, jakePseudoClone);
 	}
-	
-	
+
+	@Test
+	void ensureGetFellowShipReturnNotNull() {
+		List<TolkeinCharacter> fellowShips = dataService.getFellowShip();
+		Assertions.assertTrue(fellowShips.size() > 0);
+	}
 	@Test
 	void checkInheritance() {
 		TolkeinCharacter tolkeinCharacter = dataService.getFellowShip().get(0);
-		//Todo Check that tolkeinCharacter.getClass() is not a movie class
-		fail("Not yet implemented");
+
+		Assertions.assertTrue(TolkeinCharacter.class.isAssignableFrom(tolkeinCharacter.getClass()));
+		Assertions.assertFalse(Movie.class.isAssignableFrom(tolkeinCharacter.getClass()));
 	}
-	
+
 	@Test
 	void ensureFellowShipCharacterAccessByNameReturnsNullForUnknownCharacter() {
-		//Todo implement that  a check that dataService.getFellowShipCharacter return null for an
-		// unknow fellow
-		fail("Not yet implemented");
+		TolkeinCharacter notFound = dataService.getFellowShipCharacter("NotExistSally");
+		Assertions.assertNull(notFound);
 	}
-	
+
 	@Test
 	void ensureFellowShipCharacterAccessByNameWorksGivenCorrectNameIsGiven() {
-		//Todo implement a check that dataService.getFellowShipCharacter return a fellow
-		// for an given fellow
-		fail("not yet implemented");
+		TolkeinCharacter fellowShipCharacter = dataService.getFellowShipCharacter("Frodo");
+		Assertions.assertEquals("Frodo", fellowShipCharacter.getName());
 	}
 
 	@Test
 	void ensureThatFrodoAndGandalfArePartOfTheFellowship() {
 		List<TolkeinCharacter> fellowship = dataService.getFellowShip();
-		//todo chech that Frodo and Gandalf are part of the fellowship
-		fail("not yet implemented");
+		TolkeinCharacter frodo = dataService.getFellowShipCharacter("Frodo");
+		TolkeinCharacter gandalf = dataService.getFellowShipCharacter("Gandalf");
+
+		Assertions.assertTrue(fellowship.contains(frodo));
+		Assertions.assertTrue(fellowship.contains(gandalf));
 	}
-	
+
 	@Test
 	void ensureThatOneRingBearerIsPartOfTheFellowship() {
 		List<TolkeinCharacter> fellowship = dataService.getFellowShip();
-		//todo chech that at least one ring bearer is part of the fellowship
-		fail("not yet implemented");
+		// todo check that at least one ring bearer is part of the fellowship
+		Map<Ring, TolkeinCharacter> ringBearers = dataService.getRingBearers();
+		Assertions.assertTrue(ringBearers.values().stream().anyMatch(ringBearersvalues -> fellowship.contains(ringBearersvalues)));
 	}
-	
-	//TODO use @RepeatedTest(int) to execute this test 1000  times
-	@Test
+
+	@RepeatedTest(1000)
 	@Tag("slow")
 	@DisplayName("Minimal stress testing: run this test 10000 times")
 	void ensureThatWeCanRetrieveFellowshipMultipleTimes() {
 		dataService = new DataService();
 		assertNotNull(dataService.getFellowShip());
-		fail("not yet implemented");
-		
 	}
-	
+
 	@Test
 	void ensureOrdering() {
 		List<TolkeinCharacter> fellowship = dataService.getFellowShip();
-		//Ensure that the order of the fellowship is:
+		// Ensure that the order of the fellowship is:
 		// frodo, sam, merry,pippin, gandalf,legolas,gimli,aragorn,boromir
-		fail("not yet implemented");
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Frodo"),fellowship.get(0));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Sam"),fellowship.get(1));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Merry"),fellowship.get(2));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Pippin"),fellowship.get(3));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Gandalf"),fellowship.get(4));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Legolas"),fellowship.get(5));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Gimli"),fellowship.get(6));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Aragorn"),fellowship.get(7));
+		Assertions.assertEquals( dataService.getFellowShipCharacter("Boromir"),fellowship.get(8));
+		
 	}
-	
+
 	@Test
 	void ensureThatFellowsStayASmallGroup() {
-		//Todo write a test to get the 20 elements from the fellowShip throwns an 
-		//IndexOutOfBoundsException
-		fail("not yet implemented");
+		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> dataService.getFellowShip().get(20));
 	}
 }

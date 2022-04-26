@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static com.bext.junit5java11basic.model.Race.DWARF;
 import static com.bext.junit5java11basic.model.Race.ELF;
@@ -61,7 +62,11 @@ public class DataService {
 	
 	public TolkeinCharacter getFellowShipCharacter(String name) {
 		List<TolkeinCharacter> ringBearers = getFellowShip();
-		return ringBearers.stream().filter(s -> s.equals(name)).findFirst().get();
+		try {
+		return ringBearers.stream().filter(s -> s.getName().equals(name)).findFirst().get();
+		} catch ( NoSuchElementException nsee) {
+			return null;
+		}
 	}
 	
 	public Map<Ring, TolkeinCharacter> getRingBearers(){
