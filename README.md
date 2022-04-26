@@ -49,6 +49,24 @@ Exercise using a data modeling from Lord Of the Rings.
    	 
 - Defining timeout in your tests
 
+    import static java.time.Duration.ofSeconds;
+
+	@Test
+	void ensureProcTakesNoMore3SecAndWaitForProcEnd(){
+	   Assertions.assertTimeout(ofSeconds(3), () -> service.proc());
+	}
+
+  Test timeout with result
+  
+    @Test
+    void ensureProcTakesNoMore3SecAndWaitForProcEnd() {
+      Boolean result = Assertions.assertTimeout(ofSeconds(3), () -> { service.proc(); });
+      Assertions.assertTrue(result);
+    }  
+
+  Test timeout with result and NO wait for proc to end
+                 
+     Assertions.assertTimeoutPreemptive( ofSeconds(3), () -> service.procMoreThan3Sec() ); 
 
 - @Disable To disable test   	 
 

@@ -1,6 +1,7 @@
 package com.bext.junit5java11basic.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static java.time.Duration.ofSeconds;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,6 @@ import static com.bext.junit5java11basic.model.Race.HOBBIT;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
@@ -118,5 +118,22 @@ class DataServiceTest {
 	@Test
 	void ensureThatFellowsStayASmallGroup() {
 		Assertions.assertThrows(IndexOutOfBoundsException.class, () -> dataService.getFellowShip().get(20));
+	}
+	
+	@Test
+	void ensureUpdateTakesNoMore3Sec() {
+		Assertions.assertTimeout(ofSeconds(3), () -> dataService.update());
+	}
+	
+	@Test
+	void ensureUpdateTakesNoMore3SecWithResultAndWaitResult() {
+		Boolean result = Assertions.assertTimeout(ofSeconds(3), () -> {return dataService.update();});
+		Assertions.assertTrue( result);
+	}
+
+	@Test
+	void ensureUpdateTakesNoMore3SecWithResultAndNoWaitResult() {
+		Boolean result = Assertions.assertTimeoutPreemptively(ofSeconds(3), () -> {return dataService.update();});
+		Assertions.assertTrue( result);
 	}
 }
